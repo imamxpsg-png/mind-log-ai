@@ -5,22 +5,21 @@ from dotenv import load_dotenv
 
 # Memuat API Key dari file .env secara aman
 load_dotenv()
-FEATHERLESS_API_KEY = os.getenv("FEATHERLESS_API_KEY")
-FEATHERLESS_API_URL = "https://featherless.ai"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_API_URL = "https://groq.com"
 
 def analyze_journal_emotions(journal_text):
     """
-    Menggunakan Featherless AI untuk mengekstrak tingkat stres dan emosi dari teks jurnal yang panjang.
+    Menggunakan Groq AI untuk mengekstrak tingkat stres dan emosi dari teks jurnal yang panjang.
     """
-    if not FEATHERLESS_API_KEY:
-        return {"error": "API Key Featherless belum diatur di file .env"}
+    if not GROQ_API_KEY:
+        return {"error": "API Key GROQ_API_KEY belum diatur di file .env"}
 
     headers = {
-        "Authorization": f"Bearer {FEATHERLESS_API_KEY}",
+        "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
     }
     
-    # Prompt khusus untuk menyuruh AI mengeluarkan data terstruktur (JSON)
     prompt = f"""
     Bertindaklah sebagai psikolog klinis AI. Analisis teks jurnal harian berikut. 
     Berikan penilaian angka antara 1-10 untuk tingkat Stres (stress_score), Kecemasan (anxiety_score), dan Kebahagiaan (happiness_score).
@@ -38,19 +37,18 @@ def analyze_journal_emotions(journal_text):
     """
     
     data = {
-        "model": "meta-llama/Meta-Llama-3-8B-Instruct", 
+        "model": "llama3-8b-8192",  # Menggunakan model Llama-3 super cepat milik Groq
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.2
+        "temperature": 0.2,
+        "response_format": {"type": "json_object"}  # Memaksa Groq mengeluarkan format JSON murni
     }
     
     try:
-        response = requests.post(FEATHERLESS_API_URL, json=data, headers=headers)
+        response = requests.post(GROQ_API_URL, json=data, headers=headers)
         if response.status_code == 200:
-            # Mengambil teks respons dari AI
-            result_text = response.json()['choices'][0]['message']['content'].strip()
-            # Mengonversi teks string JSON menjadi dictionary Python
+            result_text = response.json()['choices']['message']['content'].strip()
             return json.loads(result_text)
         else:
-            return {"error": f"API Error: {response.status_code} - {response.text}"}
+            return {"error": f"Groq Error: {response.status_code} - {response.text}"}
     except Exception as e:
-        return {"error": f"Gagal terhubung ke API: {str(e)}"}
+        return {"error": f"Gagal terhubung ke API Groq: {str(e)}"}
