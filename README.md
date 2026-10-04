@@ -4,8 +4,9 @@ AI MindLog is a smart mental health companion designed for ForgeHacks 2026. It l
 
 ## 🛠️ Built With
 - **Adaption Labs**: End-to-end data processing infrastructure, data refinement via Adaptive Data, and dynamic charting powered by Adaptive Interfaces.
-- **Featherless AI**: Advanced open-source LLM orchestration (Meta-Llama-3) utilizing a high-capacity 256K context window for long-term historical journal analysis.
+- **Groq AI**: High-speed AI inference engine utilizing the `openai/gpt-oss-20b` model for structured text analysis and emotional scoring.
 - **Python**: Core backend programming language.
+
 
 ## 🚀 Key Features
 - **Unstructured Journal Ingestion**: Converts messy, emotional daily texts into clean, structured mental health datasets.
